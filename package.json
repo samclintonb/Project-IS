@@ -1,0 +1,12 @@
+{
+  "name": "project-is",
+  "version": "1.0.0",
+  "description": "B9IS123 PROGRAMMING FOR INFORMATION SYSTEMS (B9IS123_2425_TMD3)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
