@@ -3,23 +3,32 @@ async function loadClients() {
   const res = await fetch('http://localhost:3001/api/clients');
   const clients = await res.json();
 
-  const list = document.getElementById('client-list');
-  list.innerHTML = ''; // Clear before repopulating
+  const tableBody = document.querySelector('#clientTable tbody');
+  tableBody.innerHTML = ''; // Clear table before repopulating
 
   clients.forEach(client => {
-    const item = document.createElement('li');
-    item.textContent = `${client.name} (${client.email})`;
+    const row = document.createElement('tr');
 
-    const delBtn = document.createElement('button');
-    delBtn.textContent = 'Delete';
-    delBtn.onclick = async () => {
-      await fetch(`http://localhost:3001/api/clients/${client.id}`, {
-        method: 'DELETE'
-      });
-      loadClients(); // Refresh list
-    };
+    row.innerHTML = `
+      <td>${client.id}</td>
+      <td>${client.name}</td>
+      <td>${client.email}</td>
+      <td>${client.phone}</td>
+      <td>${client.company}</td>
+      <td>
+        <button onclick="editClient(${client.id})">Edit</button>
+        <button onclick="deleteClient(${client.id})">Delete</button>
+      </td>
+    `;
 
-    item.appendChild(delBtn);
-    list.appendChild(item);
+    tableBody.appendChild(row);
   });
+}
+
+// Delete client
+async function deleteClient(id) {
+  await fetch(`http://localhost:3001/api/clients/${id}`, {
+    method: 'DELETE'
+  });
+  loadClients(); // Refresh table
 }
