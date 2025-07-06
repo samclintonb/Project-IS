@@ -1,27 +1,34 @@
-<<<<<<< HEAD
 const fs = require('fs');
-=======
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
+// Define database path
 const dbPath = path.resolve(__dirname, 'database.sqlite');
+
+// Initialize SQLite database
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
-    console.error('Could not connect to database', err);
+    console.error('Failed to connect to database:', err.message);
   } else {
     console.log('Connected to SQLite database.');
   }
 });
->>>>>>> a2a1ea6 (updated db.js (self))
 
-// Load and execute schema.sql on startup
+// Load and run schema.sql on startup
 const schemaPath = path.resolve(__dirname, 'schema.sql');
-const schema = fs.readFileSync(schemaPath, 'utf-8');
-
-db.exec(schema, (err) => {
+fs.readFile(schemaPath, 'utf-8', (err, schema) => {
   if (err) {
-    console.error('Error running schema.sql:', err.message);
-  } else {
-    console.log('Database initialized using schema.sql');
+    console.error('Error reading schema.sql:', err.message);
+    return;
   }
+
+  db.exec(schema, (err) => {
+    if (err) {
+      console.error('Error executing schema.sql:', err.message);
+    } else {
+      console.log('Database initialized using schema.sql.');
+    }
+  });
 });
+
+module.exports = db;
