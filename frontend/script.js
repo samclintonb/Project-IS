@@ -1,4 +1,4 @@
-const apiUrl = 'http://localhost:3001/api/clients';
+const apiUrl = 'https://orange-lamp-q76jj9v749qpc696w-3001.app.github.dev/api/clients';
 
 const form = document.getElementById('clientForm');
 const nameInput = document.getElementById('name');
