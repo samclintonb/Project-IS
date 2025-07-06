@@ -1,10 +1,20 @@
-// Fetch and display all clients
-async function loadClients() {
-  const res = await fetch('http://localhost:3001/api/clients');
-  const clients = await res.json();
+const apiUrl = 'http://localhost:3001/api/clients';
 
-  const tableBody = document.querySelector('#clientTable tbody');
-  tableBody.innerHTML = ''; // Clear table before repopulating
+const form = document.getElementById('clientForm');
+const nameInput = document.getElementById('name');
+const emailInput = document.getElementById('email');
+const phoneInput = document.getElementById('phone');
+const companyInput = document.getElementById('company');
+const cancelBtn = document.getElementById('cancelBtn');
+const clientTableBody = document.querySelector('#clientTable tbody');
+
+let editingId = null;
+
+// Fetch and display all clients
+async function fetchClients() {
+  const res = await fetch(apiUrl);
+  const clients = await res.json();
+  clientTableBody.innerHTML = '';
 
   clients.forEach(client => {
     const row = document.createElement('tr');
@@ -16,19 +26,77 @@ async function loadClients() {
       <td>${client.phone}</td>
       <td>${client.company}</td>
       <td>
-        <button onclick="editClient(${client.id})">Edit</button>
+        <button onclick="editClient(${client.id}, '${client.name}', '${client.email}', '${client.phone}', '${client.company}')">Edit</button>
         <button onclick="deleteClient(${client.id})">Delete</button>
       </td>
     `;
 
-    tableBody.appendChild(row);
+    clientTableBody.appendChild(row);
   });
+}
+
+// Add or Update client
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const clientData = {
+    name: nameInput.value,
+    email: emailInput.value,
+    phone: phoneInput.value,
+    company: companyInput.value
+  };
+
+  try {
+    if (editingId) {
+      // UPDATE existing client
+      await fetch(`${apiUrl}/${editingId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(clientData)
+      });
+    } else {
+      // CREATE new client
+      await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(clientData)
+      });
+    }
+
+    form.reset();
+    editingId = null;
+    fetchClients();
+  } catch (error) {
+    console.error('Error saving client:', error);
+  }
+});
+
+// Edit client (pre-fill form)
+function editClient(id, name, email, phone, company) {
+  nameInput.value = name;
+  emailInput.value = email;
+  phoneInput.value = phone;
+  companyInput.value = company;
+  editingId = id;
 }
 
 // Delete client
 async function deleteClient(id) {
-  await fetch(`http://localhost:3001/api/clients/${id}`, {
-    method: 'DELETE'
-  });
-  loadClients(); // Refresh table
+  if (confirm('Are you sure you want to delete this client?')) {
+    try {
+      await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+      fetchClients();
+    } catch (error) {
+      console.error('Error deleting client:', error);
+    }
+  }
 }
+
+// Cancel button resets form
+cancelBtn.addEventListener('click', () => {
+  form.reset();
+  editingId = null;
+});
+
+// Initial load
+fetchClients();
