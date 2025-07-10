@@ -7,6 +7,7 @@ const phoneInput = document.getElementById('phone');
 const companyInput = document.getElementById('company');
 const cancelBtn = document.getElementById('cancelBtn');
 const clientTableBody = document.querySelector('#clientTable tbody');
+const searchInput = document.getElementById('searchInput');
 
 let editingId = null;
 
@@ -16,23 +17,31 @@ async function fetchClients() {
   const clients = await res.json();
   clientTableBody.innerHTML = '';
 
-  clients.forEach(client => {
-    const row = document.createElement('tr');
+  const searchText = searchInput.value.toLowerCase(); // Get what's typed in search box
 
-    row.innerHTML = `
-      <td>${client.id}</td>
-      <td>${client.name}</td>
-      <td>${client.email}</td>
-      <td>${client.phone}</td>
-      <td>${client.company}</td>
-      <td>
-        <button onclick="editClient(${client.id}, '${client.name}', '${client.email}', '${client.phone}', '${client.company}')">Edit</button>
-        <button onclick="deleteClient(${client.id})">Delete</button>
-      </td>
-    `;
+  clients
+    .filter(client =>
+      client.name.toLowerCase().includes(searchText) ||
+      client.email.toLowerCase().includes(searchText) ||
+      client.company.toLowerCase().includes(searchText)
+    )
+    .forEach(client => {
+      const row = document.createElement('tr');
 
-    clientTableBody.appendChild(row);
-  });
+      row.innerHTML = `
+        <td>${client.id}</td>
+        <td>${client.name}</td>
+        <td>${client.email}</td>
+        <td>${client.phone}</td>
+        <td>${client.company}</td>
+        <td>
+          <button onclick="editClient(${client.id}, '${client.name}', '${client.email}', '${client.phone}', '${client.company}')">Edit</button>
+          <button onclick="deleteClient(${client.id})">Delete</button>
+        </td>
+      `;
+
+      clientTableBody.appendChild(row);
+    });
 }
 
 // Add or Update client
@@ -100,3 +109,6 @@ cancelBtn.addEventListener('click', () => {
 
 // Initial load
 fetchClients();
+
+searchInput.addEventListener('input', fetchClients);
+
