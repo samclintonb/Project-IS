@@ -68,16 +68,10 @@ freeCodeCamp
 
 YouTube tutorials – for basic Express + frontend form handling guidance
 
-## AI Use Disclosure:
-
-I used ChatGPT strictly for learning syntax, debugging help, and understanding file structure.
-
-All final code, logic, UI design, and documentation was written and tested by me.
-
 ## Git Commit Justification Log
 
 This section has been moved to the submitted project documentation for detailed reference.
-
+Also, mentioned the source of each commit in the documentation.
 
 ## Final Note
 
