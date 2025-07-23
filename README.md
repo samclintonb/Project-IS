@@ -43,11 +43,6 @@ All frontend-backend communication is done via fetch() calls (API-based, not pos
 
 Manual unit tests for each feature (add, edit, delete, validation, search)
 
-
-## References & Attribution
-
-I confirm that this project was fully built by me, and I used the following resources only for syntax help and conceptual understanding:
-
 ## Reference Websites:
 
 W3Schools
